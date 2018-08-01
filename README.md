@@ -13,4 +13,4 @@ Windows
 `cmake -G "Visual Studio 15 2017" ../src/`   
 Tips: If you want to choose other -G flag params, you can type `cmake --help` and see the supported params.
 
-- c) Buid the libcet via visual studio.
+- c) Buid libcet via visual studio.
