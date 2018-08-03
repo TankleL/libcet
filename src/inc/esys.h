@@ -123,7 +123,7 @@ namespace Cet
 		void unregister_event_all();
 	};
 
-	class CET_API EventManager sealed
+	class CET_API EventManager
 	{
 	public:
 		~EventManager();
