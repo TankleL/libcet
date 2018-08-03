@@ -5,5 +5,5 @@ aux_source_directory(impl DIR_SRCS)
 
 add_library(cet SHARED ${DIR_SRCS})
 
-install(TARGETS cet DESTINATION bin)
+install(TARGETS cet DESTINATION lib)
 install(DIRECTORY inc DESTINATION "include/libcet")

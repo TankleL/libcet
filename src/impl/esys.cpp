@@ -58,7 +58,7 @@ std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventPa
 	}
 	else
 	{
-		size_t receiver_count = m_events[event].size();
+		size_t receiver_count = (*m_events)[event].size();
 		switch (receiver_count)
 		{
 		case 0:
