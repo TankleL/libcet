@@ -27,7 +27,7 @@ libcet will be installed into `/usr/local/lib`
 
 ## 2. How to use libcet
 
-###Event Sample
+__Event Sample__
 
 sample source: *__test-cet-ev.cpp__*
 
