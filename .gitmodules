@@ -1,3 +1,0 @@
-[submodule "src/third-parties/Libevent"]
-	path = src/third-parties/Libevent
-	url = https://github.com/nmathewson/Libevent.git
