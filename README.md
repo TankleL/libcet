@@ -41,22 +41,37 @@ sample source: *__test-cet-ev.cpp__*
 	public:
 		TestEV1()
 		{
-			// register an event valued 100.
-			// in this demo, register handler during construction.
-			// but you can register event handler later.
+			// register events.
+			// in this demo, register handlers during construction.
+			// but you can register event handlers later.
 			register_event(100, (EventCallBackFn)&TestEV1::on_ev_1);
+			register_event(200, (EventCallBackFn)&TestEV1::on_ev_2);
+			register_event(300, (EventCallBackFn)&TestEV1::on_ev_3);
 		}
 	
 	protected:
-		std::shared_ptr<EventResult> on_ev_1(const Cet::EventParam& param, int trace_id)
+		std::shared_ptr<EventResult> on_ev_1(const Cet::EventParam& param)
 		{
 			std::shared_ptr<EventResult> res = std::make_shared<EventResult>();
 			std::cout << "on event 1." << std::endl;
 			return res;
 		}
+	
+		std::shared_ptr<EventResult> on_ev_2(const Cet::EventParam& param)
+		{
+			std::shared_ptr<EventResult> res = std::make_shared<EventResult>();
+			std::cout << "on event 2. now post 300" << std::endl;
+			event_mgr().post_event(300);
+			return res;
+		}
+	
+		std::shared_ptr<EventResult> on_ev_3(const Cet::EventParam& param)
+		{
+			std::shared_ptr<EventResult> res = std::make_shared<EventResult>();
+			std::cout << "on event 3." << std::endl;
+			return res;
+		}
 	};
-	
-	
 	
 	int main(int argc, char** argv)
 	{
@@ -64,7 +79,8 @@ sample source: *__test-cet-ev.cpp__*
 	
 		event_mgr().send_event(10);		// send an event valued 10. no one will handle this event.
 		event_mgr().send_event(100);	// send an event valued 100. TestEV1 will handle it in on_ev_1().
-	
+		event_mgr().post_event(200);	// post an event valued 200.
+
 		return 0;
 	}
 
@@ -77,5 +93,7 @@ running result:
 
 	[cet@localhost test]$ ./a.out 
 	on event 1.
+	on event 2. now post 300
+	on event 3.
 
 
