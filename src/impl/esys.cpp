@@ -8,13 +8,15 @@
 using namespace Cet;
 
 EventManager::EventManager(size_t max_call_depth)
-	: m_events(new std::unordered_map<Event, EventUserMap>())
+	: m_post_list(new std::queue<DeferCall>())
+	, m_events(new std::unordered_map<Event, EventUserMap>())
 	, m_max_call_depth(max_call_depth)
 	, m_call_count(0)
 {}
 
 EventManager::~EventManager()
 {
+	SAFE_DELETE(m_post_list);
 	SAFE_DELETE(m_events);
 }
 
@@ -46,7 +48,7 @@ void EventManager::unregister_event_user(EventUser* receiver)
 	}
 }
 
-std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventParam& param, int trace_id)
+std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventParam& param)
 {
 	std::shared_ptr<EventResult> res(std::make_shared<EmptyEventResult>());
 	++m_call_count;
@@ -70,7 +72,7 @@ std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventPa
 			EventUser::EventCallBackFn callback = (*m_events)[event].begin()->second;
 			if (callback && user)
 			{
-				res = ((*(user)).*callback)(param, trace_id);
+				res = ((*(user)).*callback)(param);
 			}
 		}
 			break;
@@ -80,7 +82,7 @@ std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventPa
 			{
 				if (user.second && user.first)
 				{
-					((*(user.first)).*(user.second))(param, trace_id);
+					((*(user.first)).*(user.second))(param);
 				}
 			}
 		}
@@ -90,7 +92,7 @@ std::shared_ptr<EventResult> EventManager::send_event(Event event, const EventPa
 	return res;
 }
 
-std::vector<std::shared_ptr<EventResult>> EventManager::send_event_firm(Event event, const EventParam& param, int trace_id)
+std::vector<std::shared_ptr<EventResult>> EventManager::send_event_firm(Event event, const EventParam& param)
 {
 	std::vector<std::shared_ptr<EventResult>> res;
 	++m_call_count;
@@ -106,7 +108,7 @@ std::vector<std::shared_ptr<EventResult>> EventManager::send_event_firm(Event ev
 		{
 			if (user.second && user.first)
 			{
-				res.push_back(((*(user.first)).*(user.second))(param, trace_id));
+				res.push_back(((*(user.first)).*(user.second))(param));
 			}
 		}
 	}
@@ -115,9 +117,33 @@ std::vector<std::shared_ptr<EventResult>> EventManager::send_event_firm(Event ev
 	return res;
 }
 
-void EventManager::post_event(Event event, const EventParam& param, bool reply, int trace_id)
+void EventManager::post_event(Event event, const EventParam& param)
 {
-	
+	++m_call_count;
+	if (m_call_count >= m_max_call_depth)
+	{
+		assert(false);
+	}
+	else
+	{
+		m_post_list->push(DeferCall(param, event));
+		if (m_post_list->size() == 1)
+		{
+			while (m_post_list->size() > 0)
+			{
+				DeferCall& cur = m_post_list->front();
+				for (auto& user : (*m_events)[cur.m_event])
+				{
+					if (user.second && user.first)
+					{
+						((*(user.first)).*(user.second))(*cur.m_param);
+					}
+				}
+				m_post_list->pop();
+				--m_call_count;
+			}
+		}
+	}
 }
 
 EventUser::~EventUser()

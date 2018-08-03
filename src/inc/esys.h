@@ -112,7 +112,7 @@ namespace Cet
 	{
 		friend class EventManager;
 	public:
-		typedef std::shared_ptr<EventResult> (EventUser::*EventCallBackFn)(const EventParam& param, int trace_id);
+		typedef std::shared_ptr<EventResult> (EventUser::*EventCallBackFn)(const EventParam& param);
 
 	public:
 		virtual ~EventUser();
@@ -134,11 +134,9 @@ namespace Cet
 		void unregister_event(Event event, EventUser* receiver);
 		void unregister_event_user(EventUser* receiver);
 
-		void post_event(Event event, const EventParam& param = EmptyEventParam(), bool reply = false, int trace_id = -1);
-		std::shared_ptr<EventResult> send_event(Event event, const EventParam& param = EmptyEventParam(), int trace_id = -1);
-
-		void pos_event_firm(Event event, const EventParam& param, bool reply = false, int trace_id = -1);
-		std::vector<std::shared_ptr<EventResult>> send_event_firm(Event event, const EventParam& param = EmptyEventParam(), int trace_id = -1);
+		void post_event(Event event, const EventParam& param = EmptyEventParam());
+		std::shared_ptr<EventResult> send_event(Event event, const EventParam& param = EmptyEventParam());
+		std::vector<std::shared_ptr<EventResult>> send_event_firm(Event event, const EventParam& param = EmptyEventParam());
 
 	public:
 		void once();
@@ -146,20 +144,34 @@ namespace Cet
 	protected:
 		EventManager(size_t max_call_depth);
 
+	protected:
 		struct DeferCall
 		{
-			DeferCall()
-				: event(0)
-				, trace_id(0)
+			DeferCall(const EventParam& param,
+				const Event& event)
+				: m_param(param.clone())
+				, m_event(event)
 			{}
 
-			std::shared_ptr<EventParam>	param;
-			Event event;
-			int	trace_id;
+			DeferCall(const DeferCall& rhs)
+				: m_param(rhs.m_param)
+				, m_event(rhs.m_event)
+			{}
+
+			DeferCall& operator=(const DeferCall& rhs)
+			{
+				m_param = rhs.m_param;
+				m_event = rhs.m_event;
+				return *this;
+			}
+
+			std::shared_ptr<EventParam>	m_param;
+			Event m_event;
 		};
 
-	protected:
+		std::queue<DeferCall>*		m_post_list;
 
+	protected:
 		typedef std::map<EventUser*, EventUser::EventCallBackFn>	EventUserMap;
 		std::unordered_map<Event, EventUserMap>*	m_events;
 
