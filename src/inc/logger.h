@@ -241,7 +241,7 @@ namespace Cet
 
 
 #ifdef _DEBUG
-#	define LOG_D(fmt, ...)	CET::Logger::get_instance()->log(\
+#	define LOG_D(fmt, ...)	Cet::Logger::get_instance()->log(\
 		Cet::Logger::Debug, std::this_thread::get_id(), __FILENAME__, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
 #else
 #	define LOG_D(fmt, ...)
