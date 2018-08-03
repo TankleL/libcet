@@ -34,11 +34,15 @@ sample source: *__test-cet-ev.cpp__*
 	
 	using namespace Cet;
 	
+	// firstly, define a event-user which is responsible for specified events.
 	class TestEV1 : public EventUser
 	{
 	public:
 		TestEV1()
 		{
+			// register an event valued 100.
+			// in this demo, register handler during construction.
+			// but you can register event handler later.
 			register_event(100, (EventCallBackFn)&TestEV1::on_ev_1);
 		}
 	
@@ -53,13 +57,12 @@ sample source: *__test-cet-ev.cpp__*
 	
 	
 	
-	int main()
+	int main(int argc, char** argv)
 	{
-		TestEV1 tev1;
+		TestEV1 tev1;	// initialize TestEV1.
 	
-		event_mgr().send_event(10);
-		event_mgr().send_event(100);
-		
+		event_mgr().send_event(10);		// send an event valued 10. no one will handle this event.
+		event_mgr().send_event(100);	// send an event valued 100. TestEV1 will handle it in on_ev_1().
 	
 	    return 0;
 	}
