@@ -1,5 +1,7 @@
 #include "api_dev_mod.h"
+
 #include "../inc/csys.h"
+#include "../inc/msged-exception.h"
 
 using namespace Cet;
 
@@ -42,7 +44,7 @@ void CommandManager::register_cmd(uint32_t id, Command* cmd)
 {
 	Command* rcmd = (*m_cmds)[id];
 	if (rcmd)
-		throw std::exception("cmd-id conflicted.");
+		throw msged_exception("cmd-id conflicted.");
 	else
 		(*m_cmds)[id] = cmd;
 }

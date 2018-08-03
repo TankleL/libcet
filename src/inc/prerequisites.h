@@ -47,10 +47,13 @@
 #	define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #endif
 
-#ifdef API_DEV_MOD
-#	define	CET_API	__declspec(dllexport)
+#ifdef WIN32
+#	ifdef API_DEV_MOD
+#		define	CET_API	__declspec(dllexport)
+#	else
+#		define	CET_API	__declspec(dllimport)
+#	endif
 #else
-#	define	CET_API	__declspec(dllimport)
+#	define CET_API
 #endif
-
 #endif // !CET_PREREQUISITES_H

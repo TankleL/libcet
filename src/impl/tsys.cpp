@@ -1,5 +1,8 @@
 #include "api_dev_mod.h"
+
 #include "../inc/tsys.h"
+#include "../inc/logger.h"
+#include "../inc/msged-exception.h"
 
 using namespace Cet;
 
@@ -55,7 +58,7 @@ void TaskHandler::add_task(const Task& task)
 	}
 	else
 	{
-		throw std::exception("too much tasks");
+		throw msged_exception("too much tasks");
 	}
 }
 
@@ -68,8 +71,8 @@ void TaskHandler::proc_thrd()
 			size_t idx = m_rsp_idx;
 			m_rsp_idx = (m_rsp_idx + 1) % MAX_TASK_NUM;
 
-			//LOG_D("hdlr = %u, rsp idx = %u, req idx = %u, task-id = %d",
-			//	(unsigned int)this, m_rsp_idx, m_req_idx, m_tasks[idx].get_id());
+			LOG_D("hdlr = %u, rsp idx = %u, req idx = %u, task-id = %d",
+				(unsigned int)this, m_rsp_idx, m_req_idx, m_tasks[idx].get_id());
 			m_tasks[idx].response();
 		}
 		else

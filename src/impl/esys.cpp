@@ -1,6 +1,7 @@
 #include "api_dev_mod.h"
-#include "../inc/prerequisites.h"
+
 #include "../inc/esys.h"
+#include "../inc/msged-exception.h"
 
 #define MAX_CALL_STACK_DEPTH	64
 
