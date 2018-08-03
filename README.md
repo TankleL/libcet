@@ -64,7 +64,7 @@ sample source: *__test-cet-ev.cpp__*
 		event_mgr().send_event(10);		// send an event valued 10. no one will handle this event.
 		event_mgr().send_event(100);	// send an event valued 100. TestEV1 will handle it in on_ev_1().
 	
-	    return 0;
+		return 0;
 	}
 
 build script:
