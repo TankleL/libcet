@@ -21,6 +21,8 @@
 #include <atomic>
 
 #include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 #ifdef WIN32
 #	include <WinSock2.h>
 #	include <WS2tcpip.h>
