@@ -17,6 +17,13 @@ Tips: If you want to choose other -G flag params, you can type `cmake --help` an
 
 Linux(CentOS 7)
 
+	mkdir build && cd build
+	cmake ../src/
+	make
+	sudo make install
+
+libcet will be installed into `/usr/local/lib`
+
 
 ## 2. How to use libcet
 ###Event Sample
