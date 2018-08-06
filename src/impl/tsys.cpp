@@ -21,7 +21,6 @@ TaskHandler::TaskHandler()
 	, m_mtx(new std::mutex())
 	, m_cv(new std::condition_variable())
 {
-	memset(m_tasks, 0, MAX_TASK_NUM);
 	memset(m_cancel_tasks, 0, sizeof(m_cancel_tasks));
 	m_workthrd = new std::thread(std::bind(&TaskHandler::proc_thrd, this));
 }

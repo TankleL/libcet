@@ -16,6 +16,7 @@ namespace Cet
 
 	public:
 		Task()
+			: m_id(0)
 		{}
 
 		Task(IDType id)
