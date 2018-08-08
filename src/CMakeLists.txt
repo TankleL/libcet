@@ -7,3 +7,4 @@ add_library(cet SHARED ${DIR_SRCS})
 
 install(TARGETS cet DESTINATION lib)
 install(DIRECTORY inc DESTINATION "include/libcet")
+
